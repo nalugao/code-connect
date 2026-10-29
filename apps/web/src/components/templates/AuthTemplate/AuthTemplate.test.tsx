@@ -25,6 +25,7 @@ describe('AuthTemplate', () => {
     expect(screen.getByText('Boas-vindas!')).toBeInTheDocument()
     expect(screen.getByText('conteúdo do formulário')).toBeInTheDocument()
     expect(screen.getByText('rodapé')).toBeInTheDocument()
+    expect(document.title).toBe('Login | Code Connect')
   })
 
   it('has no WCAG 2.2 AA violations', async () => {

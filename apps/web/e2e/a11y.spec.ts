@@ -42,6 +42,13 @@ for (const route of routes) {
       expect(results.violations.map((violation) => `${violation.id}: ${violation.nodes.map((node) => node.target.join(' ')).join(', ')}`)).toEqual([])
     })
 
+    // 2.4.2 Page Titled — each route needs its own descriptive title.
+    test('has a unique page title', async ({ page }) => {
+      await gotoReady(page, route.path)
+
+      await expect(page).toHaveTitle(`${route.name} | Code Connect`)
+    })
+
     // 1.4.10 Reflow — most relevant on the 320px project.
     test('does not scroll horizontally', async ({ page }) => {
       await gotoReady(page, route.path)

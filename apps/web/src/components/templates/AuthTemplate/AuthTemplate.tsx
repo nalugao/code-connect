@@ -24,6 +24,7 @@ export function AuthTemplate({
 }: AuthTemplateProps) {
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-grafite px-4 py-10">
+      <title>{`${title} | Code Connect`}</title>
       <ChainShape className="absolute -top-2 left-[142px] w-[407px] opacity-30 max-lg:hidden" />
       <ChainShape className="absolute right-[142px] bottom-0 w-[407px] opacity-30 max-lg:hidden" />
 
