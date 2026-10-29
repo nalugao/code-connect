@@ -7,7 +7,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-primary text-dark hover:brightness-95',
+  primary: 'bg-verde-destaque text-verde-petroleo hover:brightness-95',
 }
 
 export function Button({
@@ -19,7 +19,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-3 font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60 ${variantClasses[variant]} ${className}`}
+      className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-3 text-lg font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-verde-destaque disabled:cursor-not-allowed disabled:opacity-60 ${variantClasses[variant]} ${className}`}
       {...props}
     />
   )

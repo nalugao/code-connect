@@ -14,7 +14,7 @@ type SocialLoginProps = {
 
 export function SocialLogin({ providers, text = 'ou entre com outras contas' }: SocialLoginProps) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       <Divider text={text} />
       <ul className="flex justify-center gap-6">
         {providers.map((provider) => (

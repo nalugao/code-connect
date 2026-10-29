@@ -12,7 +12,7 @@ export function ChainShape({ className = '' }: ChainShapeProps) {
       fill="none"
       stroke="currentColor"
       strokeWidth="40"
-      className={`pointer-events-none text-shape ${className}`}
+      className={`pointer-events-none text-verde-petroleo ${className}`}
     >
       <rect x="20" y="80" width="120" height="200" rx="60" />
       <rect x="120" y="20" width="120" height="200" rx="60" />

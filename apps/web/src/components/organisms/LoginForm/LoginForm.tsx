@@ -66,7 +66,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
       </div>
       <Button type="submit" className="mt-4">
         Login
-        <Icon name="arrow-right" />
+        <Icon name="arrow-right" className="size-[18px]" />
       </Button>
     </form>
   )

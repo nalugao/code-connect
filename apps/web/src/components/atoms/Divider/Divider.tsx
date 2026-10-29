@@ -4,7 +4,7 @@ type DividerProps = {
 
 export function Divider({ text }: DividerProps) {
   return (
-    <div role="separator" className="flex items-center gap-3 text-sm text-offwhite">
+    <div role="separator" className="flex items-center gap-4 text-sm text-offwhite">
       <span className="h-px flex-1 bg-offwhite" />
       {text && (
         <>
