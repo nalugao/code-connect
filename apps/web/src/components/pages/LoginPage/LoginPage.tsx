@@ -1,13 +1,8 @@
 import { AuthRedirect } from '../../molecules/AuthRedirect/AuthRedirect'
 import { LoginForm, type LoginFormValues } from '../../organisms/LoginForm/LoginForm'
-import { SocialLogin, type SocialProvider } from '../../organisms/SocialLogin/SocialLogin'
+import { SocialLogin } from '../../organisms/SocialLogin/SocialLogin'
 import { AuthTemplate } from '../../templates/AuthTemplate/AuthTemplate'
-
-// TODO: integrate with the API once authentication endpoints exist.
-const socialProviders: SocialProvider[] = [
-  { name: 'Github', iconSrc: '/Github.png', onClick: () => console.log('login with github') },
-  { name: 'Gmail', iconSrc: '/Google.png', onClick: () => console.log('login with google') },
-]
+import { socialProviders } from '../socialProviders'
 
 // TODO: integrate with the API once authentication endpoints exist.
 function handleLogin(values: LoginFormValues) {
@@ -17,14 +12,17 @@ function handleLogin(values: LoginFormValues) {
 export function LoginPage() {
   return (
     <AuthTemplate
-      bannerSrc="/IMG_1 - Desktop.png"
+      bannerSrc="/banner-login.webp"
       bannerAlt="Pessoa sorrindo programando em frente a telas com interfaces verdes"
+      bannerWidth={1344}
+      bannerHeight={896}
+      bannerPosition="object-[52%_center]"
       title="Login"
       subtitle="Boas-vindas! Faça seu login."
+      footer={<AuthRedirect question="Ainda não tem conta?" linkText="Crie seu cadastro!" to="/cadastro" icon="clipboard" />}
     >
       <LoginForm onSubmit={handleLogin} />
       <SocialLogin providers={socialProviders} />
-      <AuthRedirect question="Ainda não tem conta?" linkText="Crie seu cadastro!" to="/cadastro" icon="clipboard" />
     </AuthTemplate>
   )
 }

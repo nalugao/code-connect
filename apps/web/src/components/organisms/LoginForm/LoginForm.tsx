@@ -1,9 +1,9 @@
-import { useState, type FormEvent } from 'react'
 import { Button } from '../../atoms/Button/Button'
 import { Checkbox } from '../../atoms/Checkbox/Checkbox'
 import { Icon } from '../../atoms/Icon/Icon'
 import { TextLink } from '../../atoms/TextLink/TextLink'
 import { FormField } from '../../molecules/FormField/FormField'
+import { useValidatedForm, type FormErrors } from '../../../hooks/useValidatedForm/useValidatedForm'
 
 export type LoginFormValues = {
   identifier: string
@@ -11,35 +11,28 @@ export type LoginFormValues = {
   remember: boolean
 }
 
-type LoginFormErrors = Partial<Record<'identifier' | 'password', string>>
-
 type LoginFormProps = {
   onSubmit: (values: LoginFormValues) => void
 }
 
-function validate({ identifier, password }: LoginFormValues): LoginFormErrors {
-  const errors: LoginFormErrors = {}
-  if (!identifier.trim()) errors.identifier = 'Informe seu email ou usuário'
-  if (!password) errors.password = 'Informe sua senha'
+function parse(data: FormData): LoginFormValues {
+  return {
+    identifier: String(data.get('identifier') ?? '').trim(),
+    password: String(data.get('password') ?? ''),
+    remember: data.get('remember') === 'on',
+  }
+}
+
+function validate({ identifier, password }: LoginFormValues): FormErrors<LoginFormValues> {
+  const errors: FormErrors<LoginFormValues> = {}
+  if (!identifier) errors.identifier = 'Informe seu email ou usuário'
+  // Not trimmed (spaces may be part of a password), but a password of only spaces counts as empty.
+  if (!password.trim()) errors.password = 'Informe sua senha'
   return errors
 }
 
 export function LoginForm({ onSubmit }: LoginFormProps) {
-  const [errors, setErrors] = useState<LoginFormErrors>({})
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    const values: LoginFormValues = {
-      identifier: String(data.get('identifier') ?? ''),
-      password: String(data.get('password') ?? ''),
-      remember: data.get('remember') === 'on',
-    }
-
-    const validationErrors = validate(values)
-    setErrors(validationErrors)
-    if (Object.keys(validationErrors).length === 0) onSubmit(values)
-  }
+  const { errors, handleSubmit } = useValidatedForm({ parse, validate, onSubmit })
 
   return (
     <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -66,7 +59,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
       </div>
       <Button type="submit" className="mt-4">
         Login
-        <Icon name="arrow-right" />
+        <Icon name="arrow-right" className="size-[18px]" />
       </Button>
     </form>
   )

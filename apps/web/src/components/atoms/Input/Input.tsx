@@ -9,7 +9,7 @@ export function Input({ invalid = false, className = '', ...props }: InputProps)
   return (
     <input
       aria-invalid={invalid || undefined}
-      className={`w-full rounded bg-input px-3 py-2 text-sm text-page placeholder:text-dark/70 focus:outline-2 focus:outline-primary ${invalid ? 'outline-2 outline-red-400' : ''} ${className}`}
+      className={`w-full rounded bg-cinza-medio px-4 py-2 text-sm text-grafite placeholder:text-cinza-escuro focus:outline-2 focus:outline-verde-destaque ${invalid ? 'outline-2 outline-red-400' : ''} ${className}`}
       {...props}
     />
   )

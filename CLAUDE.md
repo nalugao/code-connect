@@ -23,6 +23,7 @@ pnpm dev:api
 pnpm build          # builds every workspace package
 pnpm lint           # oxlint in every package
 pnpm test           # unit tests in every package (api + web)
+pnpm test:a11y      # WCAG 2.2 AA checks for web pages in Chromium (Playwright + axe)
 pnpm api <script>   # run any api script, e.g. `pnpm api test:e2e`
 pnpm web <script>   # run any web script, e.g. `pnpm web preview`
 ```
@@ -53,11 +54,36 @@ The web `build` runs `tsc -b` before `vite build`, so type errors fail the build
   - `templates/` — page layouts that place organisms but receive data via props.
   - `pages/` — templates filled with real data; the only level that fetches data or touches routing.
   A component may import only from its own level or lower ones, never from a higher level.
+- **Hooks** shared by components live in `src/hooks/<useName>/` with their test (e.g. `useValidatedForm`, the parse → validate → submit flow used by `LoginForm` and `SignUpForm`).
 - **One folder per component**, holding the component and its test, e.g. `atoms/Button/Button.tsx` + `atoms/Button/Button.test.tsx`.
 - **Tailwind CSS** for all styling: use utility classes in JSX; don't add new `.css` files or inline `style` props except for truly dynamic values. Variants are expressed via props that map to class sets.
 - **Every component needs a test** covering its essential use: it renders, and its main interaction or prop-driven behavior works (e.g. a Button calls `onClick`; a FormField shows its label and error). Test from the user's point of view (queries by role/label/text), not implementation details. A component change is not done until its test exists and passes.
-- **Tooling:** Tailwind v4 via `@tailwindcss/vite`. Design tokens (colors, `font-sans` = Prompt) live in the `@theme` block of `src/index.css`; use the token classes (`bg-page`, `bg-card`, `text-primary`, `text-offwhite`…) instead of raw hex values. Tests use Vitest + React Testing Library + jsdom (configured in `vite.config.ts`, globals on, setup in `src/test/setup.ts`); wrap components that render a `Link` in `MemoryRouter`. Single file: `pnpm web test src/components/atoms/Button`.
-- **Routing:** `react-router` (import from `react-router`, not `react-router-dom`); routes are declared in `src/App.tsx`. Auth screens (login, future sign-up) share `templates/AuthTemplate` and differ only in banner, title/subtitle and the organisms passed as children.
+- **Colors.** The project palette extends the Tailwind theme in the `@theme` block of `src/index.css` (`--color-*`), named after the Figma color styles:
+
+  | Figma style | Class suffix | Hex | Typical use |
+  |---|---|---|---|
+  | Grafite | `grafite` | `#00090E` | page background, text on light inputs |
+  | Cinza Escuro | `cinza-escuro` | `#171D1F` | cards, input placeholders |
+  | Cinza médio | `cinza-medio` | `#888888` | input background, checkbox border/label |
+  | Offwhite | `offwhite` | `#E1E1E1` | default text, dividers |
+  | Verde destaque | `verde-destaque` | `#81FE88` | primary button, links, focus outline |
+  | Verde petróleo | `verde-petroleo` | `#132E35` | text on primary button, background shapes |
+
+  Use them as utilities (`bg-grafite`, `text-verde-destaque`, `outline-verde-destaque`, `bg-cinza-escuro/50`…). Never write hex values or arbitrary colors in classes (`text-[#81fe88]`). If the design brings a new color, add it to the palette under its Figma name first. Tailwind's default palette is still available for states the design doesn't cover (e.g. `text-red-400` for errors).
+- **Font sizes.** Use Tailwind's default type scale; never arbitrary sizes (`text-[15px]`) or custom `--text-*` tokens. Map each Figma size to the closest step, rounding down on ties:
+
+  | Figma style | Size | Class |
+  |---|---|---|
+  | Subtitle Large Semibold | 31px | `text-3xl font-semibold` |
+  | Paragraph Large | 22px | `text-xl` |
+  | Paragraph / Paragraph Semibold | 18px | `text-lg` (+ `font-semibold`) |
+  | Paragraph Small | 15px | `text-sm` |
+  | Label | 12.5px | `text-xs` |
+
+  The font family is Prompt (`font-sans`, self-hosted via `@fontsource/prompt` imported in `main.tsx` — no Google Fonts link, so nothing render-blocking), applied globally on `body`. Page `<title>`s are rendered by `AuthTemplate` (`"<title> | Code Connect"`) and override the `Code Connect` fallback in `index.html`.
+- **Tooling:** Tailwind v4 via `@tailwindcss/vite`. Tests use Vitest + React Testing Library + jsdom (configured in `vite.config.ts`, globals on, setup in `src/test/setup.ts`); wrap components that render a `Link` in `MemoryRouter`. Single file: `pnpm web test src/components/atoms/Button`.
+- **Accessibility (WCAG 2.2 AA):** molecule-and-up tests assert `expect(await wcagViolations()).toEqual([])` (helper in `src/test/axe.ts`; jsdom can't paint, so `color-contrast` is skipped there). Real-browser checks live in `e2e/a11y.spec.ts` (`pnpm test:a11y`, starts its own Vite on 5180): axe on every route (also with validation errors shown), no horizontal scroll at 320px, no clipped text at 200% font size, and Tab reaches every control with a visible focus indicator. Add new routes to the `routes` list there. Tag list shared via `src/test/wcag.ts`.
+- **Routing:** `react-router` (import from `react-router`, not `react-router-dom`); routes are declared in `src/App.tsx`. Auth screens (`/login`, `/cadastro`) share `templates/AuthTemplate` and differ only in banner (`bannerSrc` + `bannerPosition`), title/subtitle, the organisms passed as children and the `footer` (an `AuthRedirect`).
 
 ## Backend rules (`apps/api`)
 

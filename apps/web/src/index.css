@@ -2,15 +2,16 @@
 
 @theme {
   --font-sans: "Prompt", sans-serif;
-  --color-page: #01080e;
-  --color-card: #171d1f;
-  --color-shape: #0f1a1f;
-  --color-primary: #81fe88;
-  --color-input: #888888;
+
+  /* Code Connect palette, named after the Figma color styles. */
+  --color-grafite: #00090e;
+  --color-cinza-escuro: #171d1f;
+  --color-cinza-medio: #888888;
   --color-offwhite: #e1e1e1;
-  --color-dark: #132e35;
+  --color-verde-destaque: #81fe88;
+  --color-verde-petroleo: #132e35;
 }
 
 body {
-  @apply bg-page font-sans text-offwhite antialiased;
+  @apply bg-grafite font-sans text-offwhite antialiased;
 }
