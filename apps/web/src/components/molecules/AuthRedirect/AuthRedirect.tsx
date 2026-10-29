@@ -14,7 +14,8 @@ type AuthRedirectProps = {
 
 const layoutClasses: Record<AuthRedirectLayout, { wrapper: string; question: string }> = {
   stacked: { wrapper: 'flex-col items-center', question: 'text-sm' },
-  inline: { wrapper: 'items-center', question: 'text-lg' },
+  // Wraps instead of overflowing narrow cards or enlarged text (WCAG 1.4.4 / 1.4.10).
+  inline: { wrapper: 'flex-wrap items-center justify-center', question: 'text-lg' },
 }
 
 export function AuthRedirect({ question, linkText, to, icon, layout = 'stacked' }: AuthRedirectProps) {
