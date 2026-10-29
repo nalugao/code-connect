@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const PORT = 4173
+// Not 4173 (`vite preview`) nor 5173 (`vite`), so the suite never audits a stale or unrelated server.
+const PORT = 5180
 
 export default defineConfig({
   testDir: './e2e',
@@ -16,6 +17,6 @@ export default defineConfig({
   webServer: {
     command: `pnpm exec vite --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
   },
 })

@@ -2,6 +2,8 @@ import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 import { formatViolations, WCAG_AA_TAGS } from '../src/test/wcag.ts'
 
+const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
+
 const routes = [
   { name: 'Login', path: '/login' },
   { name: 'Cadastro', path: '/cadastro' },
@@ -30,7 +32,8 @@ for (const route of routes) {
     test('has no axe WCAG 2.2 AA violations after showing validation errors', async ({ page }) => {
       await gotoReady(page, route.path)
       await page.locator('form').getByRole('button').last().click()
-      await expect(page.locator('[aria-invalid="true"]').first()).toBeVisible()
+      // 3.3.1 Error Identification — focus lands on the first invalid field, which announces its error.
+      await expect(page.locator('[aria-invalid="true"]').first()).toBeFocused()
 
       const results = await new AxeBuilder({ page }).withTags(WCAG_AA_TAGS).analyze()
 
@@ -86,12 +89,17 @@ for (const route of routes) {
     test('reaches every interactive element by keyboard with a visible focus indicator', async ({ page }) => {
       await gotoReady(page, route.path)
 
-      const interactive = await page.locator('a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])').count()
-      expect(interactive).toBeGreaterThan(0)
-      const visited: string[] = []
+      // Number every focusable element in DOM order, so Tab must visit each one exactly once and in order.
+      const expectedOrder = await page.evaluate((selector) => {
+        const elements = [...document.querySelectorAll<HTMLElement>(selector)]
+        elements.forEach((element, index) => (element.dataset.a11yOrder = String(index)))
+        return elements.map((_, index) => index)
+      }, FOCUSABLE)
+      expect(expectedOrder.length).toBeGreaterThan(0)
+      const visited: number[] = []
       const withoutIndicator: string[] = []
 
-      for (let i = 0; i < interactive; i++) {
+      for (let i = 0; i < expectedOrder.length; i++) {
         await page.keyboard.press('Tab')
         const focused = await page.evaluate(() => {
           const element = document.activeElement as HTMLElement | null
@@ -112,17 +120,18 @@ for (const route of routes) {
 
           // A custom control (e.g. a visually hidden checkbox) may show focus on its label instead.
           return {
+            order: Number(element.dataset.a11yOrder ?? -1),
             describe: `${element.tagName.toLowerCase()} "${name}"`,
             visible: hasIndicator(element) || (label !== null && hasIndicator(label)),
           }
         })
 
         if (!focused) break
-        visited.push(focused.describe)
+        visited.push(focused.order)
         if (!focused.visible) withoutIndicator.push(focused.describe)
       }
 
-      expect(visited, 'elements reached with Tab').toHaveLength(interactive)
+      expect(visited, 'DOM order of the elements reached with Tab').toEqual(expectedOrder)
       expect(withoutIndicator, 'focused elements without a visible indicator').toEqual([])
     })
   })
