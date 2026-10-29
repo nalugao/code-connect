@@ -33,11 +33,11 @@ describe('SignUpForm', () => {
     expect(onSubmit).not.toHaveBeenCalled()
   })
 
-  it('submits the filled values', async () => {
+  it('submits the filled values, trimming name and email', async () => {
     const { onSubmit } = renderForm()
 
-    await userEvent.type(screen.getByLabelText('Nome'), 'Ana Souza')
-    await userEvent.type(screen.getByLabelText('Email'), 'ana@email.com')
+    await userEvent.type(screen.getByLabelText('Nome'), ' Ana Souza  ')
+    await userEvent.type(screen.getByLabelText('Email'), 'ana@email.com ')
     await userEvent.type(screen.getByLabelText('Senha'), 'segredo')
     await userEvent.click(screen.getByRole('checkbox', { name: 'Lembrar-me' }))
     await userEvent.click(screen.getByRole('button', { name: 'Cadastrar' }))

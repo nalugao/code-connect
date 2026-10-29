@@ -25,10 +25,10 @@ describe('LoginForm', () => {
     expect(onSubmit).not.toHaveBeenCalled()
   })
 
-  it('submits the filled values', async () => {
+  it('submits the filled values, trimming the identifier', async () => {
     const { onSubmit } = renderForm()
 
-    await userEvent.type(screen.getByLabelText('Email ou usuário'), 'usuario123')
+    await userEvent.type(screen.getByLabelText('Email ou usuário'), '  usuario123 ')
     await userEvent.type(screen.getByLabelText('Senha'), 'segredo')
     await userEvent.click(screen.getByRole('checkbox', { name: 'Lembrar-me' }))
     await userEvent.click(screen.getByRole('button', { name: 'Login' }))

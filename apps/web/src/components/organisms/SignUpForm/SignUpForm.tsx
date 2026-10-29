@@ -20,8 +20,8 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 function parse(data: FormData): SignUpFormValues {
   return {
-    name: String(data.get('name') ?? ''),
-    email: String(data.get('email') ?? ''),
+    name: String(data.get('name') ?? '').trim(),
+    email: String(data.get('email') ?? '').trim(),
     password: String(data.get('password') ?? ''),
     remember: data.get('remember') === 'on',
   }
@@ -29,9 +29,9 @@ function parse(data: FormData): SignUpFormValues {
 
 function validate({ name, email, password }: SignUpFormValues): FormErrors<SignUpFormValues> {
   const errors: FormErrors<SignUpFormValues> = {}
-  if (!name.trim()) errors.name = 'Informe seu nome'
-  if (!email.trim()) errors.email = 'Informe seu email'
-  else if (!EMAIL_PATTERN.test(email.trim())) errors.email = 'Informe um email válido'
+  if (!name) errors.name = 'Informe seu nome'
+  if (!email) errors.email = 'Informe seu email'
+  else if (!EMAIL_PATTERN.test(email)) errors.email = 'Informe um email válido'
   if (!password) errors.password = 'Informe uma senha'
   return errors
 }

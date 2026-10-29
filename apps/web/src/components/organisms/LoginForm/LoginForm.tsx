@@ -17,7 +17,7 @@ type LoginFormProps = {
 
 function parse(data: FormData): LoginFormValues {
   return {
-    identifier: String(data.get('identifier') ?? ''),
+    identifier: String(data.get('identifier') ?? '').trim(),
     password: String(data.get('password') ?? ''),
     remember: data.get('remember') === 'on',
   }
@@ -25,7 +25,7 @@ function parse(data: FormData): LoginFormValues {
 
 function validate({ identifier, password }: LoginFormValues): FormErrors<LoginFormValues> {
   const errors: FormErrors<LoginFormValues> = {}
-  if (!identifier.trim()) errors.identifier = 'Informe seu email ou usuário'
+  if (!identifier) errors.identifier = 'Informe seu email ou usuário'
   if (!password) errors.password = 'Informe sua senha'
   return errors
 }
