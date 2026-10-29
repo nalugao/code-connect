@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { FormField } from './FormField'
+import { wcagViolations } from '../../../test/axe'
 
 describe('FormField', () => {
   it('associates the label with its input', () => {
@@ -14,5 +15,11 @@ describe('FormField', () => {
 
     expect(input).toBeInvalid()
     expect(input).toHaveAccessibleDescription('Informe sua senha')
+  })
+
+  it.each([undefined, 'Informe sua senha'])('has no WCAG 2.2 AA violations (error: %s)', async (error) => {
+    render(<FormField label="Senha" error={error} />)
+
+    expect(await wcagViolations()).toEqual([])
   })
 })

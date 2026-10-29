@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { AuthTemplate } from './AuthTemplate'
+import { wcagViolations } from '../../../test/axe'
 
 describe('AuthTemplate', () => {
   it('renders the banner with the logo, the heading, the content and the footer', () => {
@@ -24,5 +25,15 @@ describe('AuthTemplate', () => {
     expect(screen.getByText('Boas-vindas!')).toBeInTheDocument()
     expect(screen.getByText('conteúdo do formulário')).toBeInTheDocument()
     expect(screen.getByText('rodapé')).toBeInTheDocument()
+  })
+
+  it('has no WCAG 2.2 AA violations', async () => {
+    render(
+      <AuthTemplate bannerSrc="/banner.png" bannerAlt="Pessoa programando" title="Login" subtitle="Boas-vindas!">
+        <p>conteúdo do formulário</p>
+      </AuthTemplate>,
+    )
+
+    expect(await wcagViolations()).toEqual([])
   })
 })

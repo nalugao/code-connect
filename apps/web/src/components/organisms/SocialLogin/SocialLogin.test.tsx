@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { SocialLogin } from './SocialLogin'
+import { wcagViolations } from '../../../test/axe'
 
 describe('SocialLogin', () => {
   it('renders one button per provider and triggers the chosen one', async () => {
@@ -19,5 +20,18 @@ describe('SocialLogin', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Github' }))
 
     expect(onGithub).toHaveBeenCalledOnce()
+  })
+
+  it('has no WCAG 2.2 AA violations', async () => {
+    render(
+      <SocialLogin
+        providers={[
+          { name: 'Github', iconSrc: '/Github.png', onClick: vi.fn() },
+          { name: 'Gmail', iconSrc: '/Google.png', onClick: vi.fn() },
+        ]}
+      />,
+    )
+
+    expect(await wcagViolations()).toEqual([])
   })
 })

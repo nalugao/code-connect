@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { SignUpForm } from './SignUpForm'
+import { wcagViolations } from '../../../test/axe'
 
 function renderForm() {
   const onSubmit = vi.fn()
@@ -47,5 +48,13 @@ describe('SignUpForm', () => {
       password: 'segredo',
       remember: true,
     })
+  })
+
+  it('has no WCAG 2.2 AA violations, with and without errors', async () => {
+    renderForm()
+    expect(await wcagViolations()).toEqual([])
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cadastrar' }))
+    expect(await wcagViolations()).toEqual([])
   })
 })
