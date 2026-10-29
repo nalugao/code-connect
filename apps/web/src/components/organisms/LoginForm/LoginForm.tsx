@@ -26,7 +26,8 @@ function parse(data: FormData): LoginFormValues {
 function validate({ identifier, password }: LoginFormValues): FormErrors<LoginFormValues> {
   const errors: FormErrors<LoginFormValues> = {}
   if (!identifier) errors.identifier = 'Informe seu email ou usuário'
-  if (!password) errors.password = 'Informe sua senha'
+  // Not trimmed (spaces may be part of a password), but a password of only spaces counts as empty.
+  if (!password.trim()) errors.password = 'Informe sua senha'
   return errors
 }
 

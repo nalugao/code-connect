@@ -32,7 +32,8 @@ function validate({ name, email, password }: SignUpFormValues): FormErrors<SignU
   if (!name) errors.name = 'Informe seu nome'
   if (!email) errors.email = 'Informe seu email'
   else if (!EMAIL_PATTERN.test(email)) errors.email = 'Informe um email válido'
-  if (!password) errors.password = 'Informe uma senha'
+  // Not trimmed (spaces may be part of a password), but a password of only spaces counts as empty.
+  if (!password.trim()) errors.password = 'Informe uma senha'
   return errors
 }
 

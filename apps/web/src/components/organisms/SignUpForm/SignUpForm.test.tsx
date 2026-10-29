@@ -33,6 +33,18 @@ describe('SignUpForm', () => {
     expect(onSubmit).not.toHaveBeenCalled()
   })
 
+  it('treats a password of only spaces as empty', async () => {
+    const { onSubmit } = renderForm()
+
+    await userEvent.type(screen.getByLabelText('Nome'), 'Ana Souza')
+    await userEvent.type(screen.getByLabelText('Email'), 'ana@email.com')
+    await userEvent.type(screen.getByLabelText('Senha'), '   ')
+    await userEvent.click(screen.getByRole('button', { name: 'Cadastrar' }))
+
+    expect(screen.getByText('Informe uma senha')).toBeInTheDocument()
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
   it('submits the filled values, trimming name and email', async () => {
     const { onSubmit } = renderForm()
 
