@@ -91,7 +91,10 @@ for (const route of routes) {
 
       // Number every focusable element in DOM order, so Tab must visit each one exactly once and in order.
       const expectedOrder = await page.evaluate((selector) => {
-        const elements = [...document.querySelectorAll<HTMLElement>(selector)]
+        // Elements hidden by the layout (e.g. `hidden lg:block`) are not tabbable, so skip them.
+        const elements = [...document.querySelectorAll<HTMLElement>(selector)].filter((element) =>
+          element.checkVisibility({ visibilityProperty: true }),
+        )
         elements.forEach((element, index) => (element.dataset.a11yOrder = String(index)))
         return elements.map((_, index) => index)
       }, FOCUSABLE)
@@ -112,17 +115,23 @@ for (const route of routes) {
             label?.textContent?.trim() ||
             element.getAttribute('name') ||
             ''
-          const hasIndicator = (target: Element) => {
+          const indicator = (target: Element) => {
             const style = getComputedStyle(target)
-            const outline = style.outlineStyle !== 'none' && parseFloat(style.outlineWidth) > 0
-            return outline || style.boxShadow !== 'none'
+            const shown = (style.outlineStyle !== 'none' && parseFloat(style.outlineWidth) > 0) || style.boxShadow !== 'none'
+            return { shown, look: `${style.outlineStyle} ${style.outlineWidth} ${style.outlineColor} ${style.boxShadow}` }
           }
+          // An outline that is there without focus (e.g. the red one on invalid inputs) is not a focus indicator,
+          // so compare each target focused vs. blurred. A custom control may show focus on its label instead.
+          const targets = label ? [element, label] : [element]
+          const focused = targets.map(indicator)
+          element.blur()
+          const blurred = targets.map(indicator)
+          element.focus()
 
-          // A custom control (e.g. a visually hidden checkbox) may show focus on its label instead.
           return {
             order: Number(element.dataset.a11yOrder ?? -1),
             describe: `${element.tagName.toLowerCase()} "${name}"`,
-            visible: hasIndicator(element) || (label !== null && hasIndicator(label)),
+            visible: focused.some((state, index) => state.shown && state.look !== blurred[index].look),
           }
         })
 
