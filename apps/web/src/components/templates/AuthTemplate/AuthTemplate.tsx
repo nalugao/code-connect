@@ -5,6 +5,9 @@ import { Logo } from '../../atoms/Logo/Logo'
 type AuthTemplateProps = {
   bannerSrc: string
   bannerAlt: string
+  /** Intrinsic size of the banner file, so the browser reserves its aspect ratio. */
+  bannerWidth: number
+  bannerHeight: number
   /** Tailwind `object-[x_y]` class that frames the banner photo. */
   bannerPosition?: string
   title: string
@@ -16,6 +19,8 @@ type AuthTemplateProps = {
 export function AuthTemplate({
   bannerSrc,
   bannerAlt,
+  bannerWidth,
+  bannerHeight,
   bannerPosition = 'object-center',
   title,
   subtitle,
@@ -23,18 +28,21 @@ export function AuthTemplate({
   footer,
 }: AuthTemplateProps) {
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-grafite px-4 py-10">
+    <main className="relative flex min-h-screen items-center justify-center bg-grafite px-4 py-10">
       <title>{`${title} | Code Connect`}</title>
-      <ChainShape className="absolute -top-2 left-[142px] w-[407px] opacity-30 max-lg:hidden" />
-      <ChainShape className="absolute right-[142px] bottom-0 w-[407px] opacity-30 max-lg:hidden" />
+      {/* Only the decoration is clipped, so real content that overflows still scrolls (WCAG 1.4.10). */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <ChainShape className="absolute -top-2 left-[142px] w-[407px] opacity-30 max-lg:hidden" />
+        <ChainShape className="absolute right-[142px] bottom-0 w-[407px] opacity-30 max-lg:hidden" />
+      </div>
 
       <div className="relative flex w-full max-w-[996px] items-center justify-between rounded-[32px] border border-grafite bg-cinza-escuro px-6 py-10 md:px-[78px] md:py-14">
         <div className="relative hidden w-[407px] shrink-0 self-stretch overflow-hidden lg:block">
           <img
             src={bannerSrc}
             alt={bannerAlt}
-            width={1344}
-            height={896}
+            width={bannerWidth}
+            height={bannerHeight}
             className={`absolute inset-0 size-full object-cover ${bannerPosition}`}
           />
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2">

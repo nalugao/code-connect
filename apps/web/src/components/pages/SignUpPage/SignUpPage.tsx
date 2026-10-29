@@ -14,6 +14,8 @@ export function SignUpPage() {
     <AuthTemplate
       bannerSrc="/banner-cadastro.webp"
       bannerAlt="Pessoa de óculos programando diante de telas com interfaces verdes"
+      bannerWidth={1344}
+      bannerHeight={896}
       bannerPosition="object-[60%_center]"
       title="Cadastro"
       subtitle="Olá! Preencha seus dados."
