@@ -54,6 +54,7 @@ The web `build` runs `tsc -b` before `vite build`, so type errors fail the build
   - `templates/` — page layouts that place organisms but receive data via props.
   - `pages/` — templates filled with real data; the only level that fetches data or touches routing.
   A component may import only from its own level or lower ones, never from a higher level.
+- **Hooks** shared by components live in `src/hooks/<useName>/` with their test (e.g. `useValidatedForm`, the parse → validate → submit flow used by `LoginForm` and `SignUpForm`).
 - **One folder per component**, holding the component and its test, e.g. `atoms/Button/Button.tsx` + `atoms/Button/Button.test.tsx`.
 - **Tailwind CSS** for all styling: use utility classes in JSX; don't add new `.css` files or inline `style` props except for truly dynamic values. Variants are expressed via props that map to class sets.
 - **Every component needs a test** covering its essential use: it renders, and its main interaction or prop-driven behavior works (e.g. a Button calls `onClick`; a FormField shows its label and error). Test from the user's point of view (queries by role/label/text), not implementation details. A component change is not done until its test exists and passes.

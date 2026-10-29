@@ -1,8 +1,8 @@
-import { useState, type FormEvent } from 'react'
 import { Button } from '../../atoms/Button/Button'
 import { Checkbox } from '../../atoms/Checkbox/Checkbox'
 import { Icon } from '../../atoms/Icon/Icon'
 import { FormField } from '../../molecules/FormField/FormField'
+import { useValidatedForm, type FormErrors } from '../../../hooks/useValidatedForm/useValidatedForm'
 
 export type SignUpFormValues = {
   name: string
@@ -11,14 +11,21 @@ export type SignUpFormValues = {
   remember: boolean
 }
 
-type SignUpFormErrors = Partial<Record<'name' | 'email' | 'password', string>>
-
 type SignUpFormProps = {
   onSubmit: (values: SignUpFormValues) => void
 }
 
-function validate({ name, email, password }: SignUpFormValues): SignUpFormErrors {
-  const errors: SignUpFormErrors = {}
+function parse(data: FormData): SignUpFormValues {
+  return {
+    name: String(data.get('name') ?? ''),
+    email: String(data.get('email') ?? ''),
+    password: String(data.get('password') ?? ''),
+    remember: data.get('remember') === 'on',
+  }
+}
+
+function validate({ name, email, password }: SignUpFormValues): FormErrors<SignUpFormValues> {
+  const errors: FormErrors<SignUpFormValues> = {}
   if (!name.trim()) errors.name = 'Informe seu nome'
   if (!email.trim()) errors.email = 'Informe seu email'
   else if (!/^\S+@\S+$/.test(email)) errors.email = 'Informe um email válido'
@@ -27,22 +34,7 @@ function validate({ name, email, password }: SignUpFormValues): SignUpFormErrors
 }
 
 export function SignUpForm({ onSubmit }: SignUpFormProps) {
-  const [errors, setErrors] = useState<SignUpFormErrors>({})
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    const values: SignUpFormValues = {
-      name: String(data.get('name') ?? ''),
-      email: String(data.get('email') ?? ''),
-      password: String(data.get('password') ?? ''),
-      remember: data.get('remember') === 'on',
-    }
-
-    const validationErrors = validate(values)
-    setErrors(validationErrors)
-    if (Object.keys(validationErrors).length === 0) onSubmit(values)
-  }
+  const { errors, handleSubmit } = useValidatedForm({ parse, validate, onSubmit })
 
   return (
     <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
