@@ -21,11 +21,11 @@ describe('SignUpForm', () => {
     expect(onSubmit).not.toHaveBeenCalled()
   })
 
-  it('rejects an invalid email', async () => {
+  it.each(['ana.com', 'ana@@email.com', 'a@b@c.com', 'ana@email'])('rejects the invalid email %s', async (email) => {
     const { onSubmit } = renderForm()
 
     await userEvent.type(screen.getByLabelText('Nome'), 'Ana Souza')
-    await userEvent.type(screen.getByLabelText('Email'), 'ana.com')
+    await userEvent.type(screen.getByLabelText('Email'), email)
     await userEvent.type(screen.getByLabelText('Senha'), 'segredo')
     await userEvent.click(screen.getByRole('button', { name: 'Cadastrar' }))
 

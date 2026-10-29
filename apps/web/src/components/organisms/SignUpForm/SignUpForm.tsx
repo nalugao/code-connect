@@ -15,6 +15,9 @@ type SignUpFormProps = {
   onSubmit: (values: SignUpFormValues) => void
 }
 
+// One "@", no spaces, and a dot in the domain — enough to catch typos; the API has the final word.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 function parse(data: FormData): SignUpFormValues {
   return {
     name: String(data.get('name') ?? ''),
@@ -28,7 +31,7 @@ function validate({ name, email, password }: SignUpFormValues): FormErrors<SignU
   const errors: FormErrors<SignUpFormValues> = {}
   if (!name.trim()) errors.name = 'Informe seu nome'
   if (!email.trim()) errors.email = 'Informe seu email'
-  else if (!/^\S+@\S+$/.test(email)) errors.email = 'Informe um email válido'
+  else if (!EMAIL_PATTERN.test(email.trim())) errors.email = 'Informe um email válido'
   if (!password) errors.password = 'Informe uma senha'
   return errors
 }
