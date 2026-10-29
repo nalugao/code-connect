@@ -9,8 +9,8 @@ describe('SocialLogin', () => {
     render(
       <SocialLogin
         providers={[
-          { name: 'Github', iconSrc: '/Github.png', onClick: onGithub },
-          { name: 'Gmail', iconSrc: '/Google.png', onClick: vi.fn() },
+          { name: 'Github', iconSrc: '/Github.png', iconWidth: 33, iconHeight: 32, onClick: onGithub },
+          { name: 'Gmail', iconSrc: '/Google.png', iconWidth: 28, iconHeight: 28, onClick: vi.fn() },
         ]}
       />,
     )
@@ -26,8 +26,8 @@ describe('SocialLogin', () => {
     render(
       <SocialLogin
         providers={[
-          { name: 'Github', iconSrc: '/Github.png', onClick: vi.fn() },
-          { name: 'Gmail', iconSrc: '/Google.png', onClick: vi.fn() },
+          { name: 'Github', iconSrc: '/Github.png', iconWidth: 33, iconHeight: 32, onClick: vi.fn() },
+          { name: 'Gmail', iconSrc: '/Google.png', iconWidth: 28, iconHeight: 28, onClick: vi.fn() },
         ]}
       />,
     )

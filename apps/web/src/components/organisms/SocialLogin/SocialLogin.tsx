@@ -4,6 +4,8 @@ import { SocialLoginButton } from '../../molecules/SocialLoginButton/SocialLogin
 export type SocialProvider = {
   name: string
   iconSrc: string
+  iconWidth: number
+  iconHeight: number
   onClick: () => void
 }
 
@@ -19,7 +21,13 @@ export function SocialLogin({ providers, text = 'ou entre com outras contas' }: 
       <ul className="flex justify-center gap-6">
         {providers.map((provider) => (
           <li key={provider.name}>
-            <SocialLoginButton iconSrc={provider.iconSrc} label={provider.name} onClick={provider.onClick} />
+            <SocialLoginButton
+              iconSrc={provider.iconSrc}
+              iconWidth={provider.iconWidth}
+              iconHeight={provider.iconHeight}
+              label={provider.name}
+              onClick={provider.onClick}
+            />
           </li>
         ))}
       </ul>
