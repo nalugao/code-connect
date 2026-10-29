@@ -22,16 +22,19 @@ export function useValidatedForm<Values>({ parse, validate, onSubmit }: UseValid
     const values = parse(new FormData(form))
 
     const validationErrors = validate(values)
-    // Render the error messages first, so the field is announced together with its aria-describedby text.
-    flushSync(() => setErrors(validationErrors))
-    if (Object.keys(validationErrors).length === 0) {
+    // Only fields with a message count, so `{ email: undefined }` does not block the submit.
+    const hasError = (name: string | null) => Boolean(name && validationErrors[name as keyof Values])
+
+    if (!Object.keys(validationErrors).some(hasError)) {
+      setErrors({})
       onSubmit(values)
       return
     }
 
+    // Render the error messages first, so the field is announced together with its aria-describedby text.
+    flushSync(() => setErrors(validationErrors))
     const firstInvalid = [...form.elements].find(
-      (element): element is HTMLElement =>
-        element instanceof HTMLElement && element.getAttribute('name') !== null && element.getAttribute('name')! in validationErrors,
+      (element): element is HTMLElement => element instanceof HTMLElement && hasError(element.getAttribute('name')),
     )
     firstInvalid?.focus()
   }

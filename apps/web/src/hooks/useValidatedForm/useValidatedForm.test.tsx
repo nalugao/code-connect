@@ -7,9 +7,10 @@ type Values = { name: string; email: string }
 function NameForm({ onSubmit }: { onSubmit: (values: Values) => void }) {
   const { errors, handleSubmit } = useValidatedForm<Values>({
     parse: (data) => ({ name: String(data.get('name') ?? ''), email: String(data.get('email') ?? '') }),
+    // Valid fields map to undefined on purpose: only fields with a message may block the submit.
     validate: ({ name, email }) => ({
-      ...(name ? {} : { name: 'Informe seu nome' }),
-      ...(email ? {} : { email: 'Informe seu email' }),
+      name: name ? undefined : 'Informe seu nome',
+      email: email ? undefined : 'Informe seu email',
     }),
     onSubmit,
   })
