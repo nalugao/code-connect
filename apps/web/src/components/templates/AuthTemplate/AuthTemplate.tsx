@@ -29,7 +29,13 @@ export function AuthTemplate({
 
       <div className="relative flex w-full max-w-[996px] items-center justify-between rounded-[32px] border border-grafite bg-cinza-escuro px-6 py-10 md:px-[78px] md:py-14">
         <div className="relative hidden w-[407px] shrink-0 self-stretch overflow-hidden lg:block">
-          <img src={bannerSrc} alt={bannerAlt} className={`absolute inset-0 size-full object-cover ${bannerPosition}`} />
+          <img
+            src={bannerSrc}
+            alt={bannerAlt}
+            width={1344}
+            height={896}
+            className={`absolute inset-0 size-full object-cover ${bannerPosition}`}
+          />
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
             <Logo />
           </div>
