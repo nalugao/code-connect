@@ -5,9 +5,12 @@ import { Logo } from '../../atoms/Logo/Logo'
 type AuthTemplateProps = {
   bannerSrc: string
   bannerAlt: string
-  /** Intrinsic size of the banner file, so the browser reserves its aspect ratio. */
-  bannerWidth: number
-  bannerHeight: number
+  /**
+   * Intrinsic size of the banner file. The container sets the rendered size (the image fills it),
+   * so these only declare the file's dimensions to the browser and audits like Lighthouse.
+   */
+  bannerWidth?: number
+  bannerHeight?: number
   /** Tailwind `object-[x_y]` class that frames the banner photo. */
   bannerPosition?: string
   title: string
